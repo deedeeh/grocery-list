@@ -1,6 +1,11 @@
 import { useState } from "react"
 
-const defaultFormData = {
+interface FormFields {
+    item: string,
+    price: number
+}
+
+const defaultFormData: FormFields = {
     item: "",
     price: 0
 }
@@ -10,10 +15,11 @@ export const Form = () => {
     const { item, price } = formData
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData(prevState => ({
-            ...prevState,
-            [e.target.id]: e.target.value
-        }));
+        setFormData(prevState => 
+            ({ ...prevState,
+                [e.target.id]: e.target.value
+            })
+        )
     }
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
