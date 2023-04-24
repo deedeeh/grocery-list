@@ -18,6 +18,10 @@ export const Form = () => {
     setFormData((prevState) => ({ ...prevState, [e.target.id]: e.target.value }));
   };
 
+  const onChangeForNumbers = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prevState) => ({ ...prevState, [e.target.id]: parseFloat(e.target.value) }));
+  };
+
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData);
@@ -32,7 +36,7 @@ export const Form = () => {
       <br />
       <br />
       <label htmlFor="price">Price</label>
-      <input type="number" id="price" value={price} onChange={onChange} />
+      <input type="number" id="price" value={price} onChange={onChangeForNumbers} />
       <br />
       <br />
       <button type="submit">Add</button>
