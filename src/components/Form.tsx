@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 interface FormFields {
   item: string;
@@ -13,10 +13,11 @@ const defaultFormData: FormFields = {
 export const Form = () => {
   const [formData, setFormData] = useState(defaultFormData);
   const [groceryItem, setGroceryItem] = useState(defaultFormData);
+  const [groceryList, setGroceryList] = useState([defaultFormData]);
 
   const { item, price } = formData;
 
-  const postDataToServer = async () => {
+  const postItem = async () => {
     const request = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -24,8 +25,19 @@ export const Form = () => {
     };
     await fetch('/api/grocery-list/item', request)
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then((data) => {
+        setGroceryItem(data);
+        groceryList[0].item === ''
+          ? setGroceryList([data])
+          : setGroceryList([...groceryList, data]);
+      })
       .catch((err) => console.log(err));
+  };
+
+  const handleOnClick = () => {
+    groceryList[0].item !== '' && groceryList.length > 0
+      ? console.log(groceryList)
+      : console.log('No items yet!');
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,22 +50,28 @@ export const Form = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    postDataToServer();
+    postItem();
     setFormData(defaultFormData);
     setGroceryItem(defaultFormData);
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <label htmlFor="item">Item</label>
-      <input type="text" id="item" value={item} onChange={onChange} />
-      <br />
-      <br />
-      <label htmlFor="price">Price</label>
-      <input type="number" id="price" value={price} onChange={onChangeForNumbers} />
-      <br />
-      <br />
-      <button type="submit">Add</button>
-    </form>
+    <Fragment>
+      <form onSubmit={onSubmit}>
+        <label htmlFor="item">Item</label>
+        <input type="text" id="item" value={item} onChange={onChange} />
+        <br />
+        <br />
+        <label htmlFor="price">Price</label>
+        <input type="number" id="price" value={price} onChange={onChangeForNumbers} />
+        <br />
+        <br />
+        <button type="submit">Add</button>
+      </form>
+      <div>
+        <br />
+        <button onClick={handleOnClick}>Get Grocery List</button>
+      </div>
+    </Fragment>
   );
 };
